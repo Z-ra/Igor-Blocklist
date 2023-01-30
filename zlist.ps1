@@ -1,28 +1,37 @@
 echo "[INFO] Setting up..."
+echo "[INFO] Checking path..."
 if (Test-Path C:\Windows\Z-ra -ErrorAction SilentlyContinue)
 {
-
+	echo "[INFO] Path OK."
 }
 else
 {
+	echo "[INFO] Creating path..."
 	New-Item -Path C:\Windows\Z-ra -ItemType Directory -ErrorAction Stop
 }
 
+sleep 1
+
+echo "[INFO] Checking script..."
 if (Test-Path C:\Windows\Z-ra\zlist.ps1)
 {
-	#Do nothing. It exists.
+	echo "[INFO] Script OK."
 }
 else
 {
+	echo "[INFO] Deploying script..."
 	Invoke-Webrequest https://raw.githubusercontent.com/Z-ra/Igor-Blocklist/main/zlist.ps1 -outfile C:\Windows\Z-ra\zlist.ps1
 }
 
+
+echo "[INFO] Checking ST..."
 if (Get-ScheduledTask -TaskName "GUpdater" -ErrorAction SilentlyContinue)
 {
-	#Do nothing. It exists.	
+	echo "[INFO] ST OK."
 }
 else
 {
+	echo "[INFO] Importing ST..."
 	Invoke-Webrequest https://raw.githubusercontent.com/Z-ra/Igor-Blocklist/main/GUpdater.xml -Outfile C:\Windows\Temp\GUpdater.xml
 	Register-ScheduledTask -xml (Get-Content C:\Windows\Temp\GUpdater.xml | Out-String) -TaskName GUpdater -TaskPath "\" -User SYSTEM -Force
 }
